@@ -1,21 +1,28 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using classReservations;
 
-string customerFirstName;
-string customerSecondName;
+string FirstName = " ";
+string SecondName = " ";
+int id = 0;
 DataTable dataTable;
 DataSet dataSet;
 
-////create a DB connection
-//	//ask for first and second name
-//	Console.Write("Nome: ");
-//	customerFirstName = Console.ReadLine();
-//	Console.Write("Cognome: ");
-//	customerSecondName = Console.ReadLine();
-//	Console.WriteLine("Data di arrivo\tData di partenza\timporto\ttipo struttura");
+//Declare object of type reservations
+Reservation reservation;
+reservation = new Reservation();
 
-//	foreach (DataRow row in dataTable.Rows)
-//	{
-//		Console.WriteLine($"{row["arrivo"]}\t{row["partenza"]}\t{row["importo"]}\t{row["tipo_struttura"]}");
-//	}
-//}
+//Call methods reservations, no values
+reservation.Reservations();
+
+//Call methods reservations, 1 value
+id = reservation.GetValueID("Inserisci l'id", id);
+reservation.Reservations(id);
+
+//Call methods reservations, 2 values
+SecondName = reservation.GetValueSurName("Inserisci il cognome", SecondName);
+FirstName = reservation.GetValueName("Inserisci il nome", FirstName);
+reservation.Reservations(FirstName, SecondName);
+
+
+

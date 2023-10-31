@@ -98,7 +98,7 @@ namespace classReservations
         public DataTable Customers(string nome, string cognome)
         {
             DataTable result;
-            SqlCommand command; 
+            SqlCommand command;
             DataSet dataSet;
 
             result = new DataTable();
@@ -119,18 +119,116 @@ namespace classReservations
             return result;
         }
 
+        public DataTable Reservations()
+        {
+            DataTable result;
+            SqlCommand command;
+            DataSet dataSet;
+
+            result = new DataTable();
+            queryString =   "SELECT ID_prenotazione, arrivo, partenza, importo, tipo_struttura " +
+                            "FROM clienti " +
+                            "JOIN prenotazioni ON clienti.ID_cliente = prenotazioni.cliente ";
+                            
+            command = new SqlCommand(queryString, this.connection);
+
+            adapter = new SqlDataAdapter(queryString, this.connection);
+
+            dataSet = new DataSet();
+            adapter.Fill(dataSet, "Clienti");
+
+            result = dataSet.Tables["Clienti"];
+
+            foreach (DataRow row in result.Rows)
+            {
+                Console.WriteLine($"{row["ID_prenotazione"],-10} | {row["arrivo"],-10} | {row["partenza"],-10} | {row["importo"],-10} | {row["tipo_struttura"],-10}");
+            }
+
+            //loads data from database
+            return result;
+        }
+
+        public DataTable Reservations(int Id)
+        {
+            DataTable result;
+            SqlCommand command;
+            DataSet dataSet;
+
+            result = new DataTable();
+            queryString =   "SELECT ID_prenotazione, arrivo, partenza, importo, tipo_struttura " +
+                            "FROM prenotazioni " +
+                            "JOIN clienti ON ID_cliente = cliente " + 
+                            $"WHERE ID_cliente = '{Id}' ";
+
+            command = new SqlCommand(queryString, this.connection);
+
+            adapter = new SqlDataAdapter(queryString, this.connection);
+
+            dataSet = new DataSet();
+            adapter.Fill(dataSet, "Clienti");
+
+           result = dataSet.Tables["Clienti"];
+
+            foreach (DataRow row in result.Rows)
+            {
+                Console.WriteLine($"{row["ID_prenotazione"],-10} | {row["arrivo"],-10} | {row["partenza"],-10} | {row["importo"],-10} | {row["tipo_struttura"],-10}");
+            }
+
+            //loads data from database
+            return result;
+        }
+
+        public DataTable Reservations(string nome, string cognome)
+        {
+            DataTable result;
+            SqlCommand command;
+            DataSet dataSet;
+
+            result = new DataTable();
+            queryString =   "SELECT ID_prenotazione, arrivo, partenza, importo, tipo_struttura " +
+                            "FROM clienti " +
+                            "JOIN prenotazioni ON ID_cliente = cliente " +
+                            $" WHERE nome = '{nome}' " +
+                            $" AND cognome = '{cognome}' ";
+            
+            command = new SqlCommand(queryString, this.connection);
+
+            adapter = new SqlDataAdapter(queryString, this.connection);
+
+            dataSet = new DataSet();
+            adapter.Fill(dataSet, "Clienti");
+
+            result = dataSet.Tables["Clienti"];
+
+            foreach (DataRow row in result.Rows)
+            {
+                Console.WriteLine($"{row["ID_prenotazione"],-10} | {row["arrivo"],-10} | {row["partenza"],-10} | {row["importo"],-10} | {row["tipo_struttura"],-10}");
+            }
+
+            //loads data from database
+            return result;
+        }
+
+        #endregion
+
         //Methods to connect to the server
+
+        #region ConnectionDB
         private void ConnectToDB()
         {
             this.connection = new SqlConnection(this.connectionString);
             this.connection.Open();
         }
 
+        #endregion
+
+        //Methods to do INPUT/OUTPUT
+
         #region INPUT/OUTPUT
         public string GetValueName(string request, string value)
         {
-            string result = " ";
-            string str = " ";
+            string result;
+            string str;
 
             do
             {
@@ -144,8 +242,8 @@ namespace classReservations
 
         public string GetValueSurName(string request, string value)
         {
-            string result = " ";
-            string str = " ";
+            string result;
+            string str;
 
             do
             {
@@ -157,9 +255,21 @@ namespace classReservations
             return result = str;
         }
 
-        #endregion 
+        public int GetValueID(string request, int ID)
+        {
+            int id;
 
-        #endregion
+            do
+            {
+                Console.WriteLine("Inserisci l'id: ");
+                Int32.TryParse(Console.ReadLine(), out id);
+            }
+            while (id == 0);
+
+            return id;
+        }
+
+        #endregion 
 
     }
 }
