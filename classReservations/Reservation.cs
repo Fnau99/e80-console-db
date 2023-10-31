@@ -8,7 +8,7 @@ namespace classReservations
         #region Properties
 
         string connectionString;
-        string queryString = "SELECT * FROM clienti INNER JOIN prenotazioni ON id_cliente = cliente";
+        string queryString = " ";
         SqlConnection connection;
         SqlDataAdapter adapter;
 
@@ -70,6 +70,8 @@ namespace classReservations
         /// Loads all customers data
         /// </summary>
         /// <returns></returns>
+        
+        //Query that return the table client
         public DataTable Customers()
 		{
 			DataTable result;
@@ -93,12 +95,69 @@ namespace classReservations
             return result;
 		}
 
+        public DataTable Customers(string nome, string cognome)
+        {
+            DataTable result;
+            SqlCommand command; 
+            DataSet dataSet;
+
+            result = new DataTable();
+            queryString = "SELECT nome, cognome " +
+                            "FROM clienti " +
+                            $"WHERE nome LIKE '%{nome}%' AND cognome LIKE '%{cognome}%'";
+
+            command = new SqlCommand(queryString, this.connection);
+
+            adapter = new SqlDataAdapter(queryString, this.connection);
+
+            dataSet = new DataSet();
+            adapter.Fill(dataSet, "Clienti");
+
+            result = dataSet.Tables["Clienti"];
+
+            //loads data from database
+            return result;
+        }
+
         //Methods to connect to the server
         private void ConnectToDB()
         {
             this.connection = new SqlConnection(this.connectionString);
             this.connection.Open();
         }
+
+        #region INPUT/OUTPUT
+        public string GetValueName(string request, string value)
+        {
+            string result = " ";
+            string str = " ";
+
+            do
+            {
+                Console.WriteLine("Inserisci il nome: ");
+                str = Console.ReadLine();
+            }
+            while (str == " ");
+
+            return result = str;
+        }
+
+        public string GetValueSurName(string request, string value)
+        {
+            string result = " ";
+            string str = " ";
+
+            do
+            {
+                Console.WriteLine("Inserisci il cognome: ");
+                str = Console.ReadLine();
+            }
+            while (str == " ");
+
+            return result = str;
+        }
+
+        #endregion 
 
         #endregion
 
