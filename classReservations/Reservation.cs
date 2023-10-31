@@ -5,8 +5,14 @@ namespace classReservations
 {
 	public class Reservation
 	{
+        #region Properties
 
-		string connectionString;
+        string connectionString;
+        string queryString = "SELECT * FROM clienti INNER JOIN prenotazioni ON id_cliente = cliente";
+        SqlConnection connection;
+        SqlDataAdapter adapter;
+
+        #endregion
 
         #region Constructors
 
@@ -16,7 +22,10 @@ namespace classReservations
         public Reservation()
 		{
 			this.connectionString = "Data Source=(local);Initial Catalog=prenotazioni;Integrated Security=True";
-		}
+
+			//Call method to do the connection
+            this.ConnectToDB();
+        }
 
 		/// <summary>
 		/// Default constructor, uses localhost and integrated authentication
@@ -28,7 +37,10 @@ namespace classReservations
 			this.connectionString = $"Data Source={server};" +
 				$"Initial Catalog={database};" +
 				$"Integrated Security=True";
-		}
+
+            //Call method to do the connection
+            this.ConnectToDB();
+        }
 
 		/// <summary>
 		/// Default constructor, uses localhost and integrated authentication
@@ -45,7 +57,10 @@ namespace classReservations
 				$"initial catalog={database};" +
 				$"password={password};" +
 				$"MultipleActiveResultSets=true";
-		}
+
+            //Call method to do the connection
+            this.ConnectToDB();
+        }
 
         #endregion
 
@@ -58,12 +73,32 @@ namespace classReservations
         public DataTable Customers()
 		{
 			DataTable result;
+            SqlCommand command;
+            DataSet dataSet;
 
-			result= new DataTable();
+            //loads from data table
+            result = new DataTable();
+            queryString = "SELECT * FROM clienti";
 
-			//loads data from database
-			return result;
+            command = new SqlCommand(queryString, this.connection);
+
+            adapter = new SqlDataAdapter(queryString, this.connection);
+
+            dataSet = new DataSet();
+            adapter.Fill(dataSet, "Clienti");
+
+            result = dataSet.Tables["Clienti"];
+
+            //loads data from database
+            return result;
 		}
+
+        //Methods to connect to the server
+        private void ConnectToDB()
+        {
+            this.connection = new SqlConnection(this.connectionString);
+            this.connection.Open();
+        }
 
         #endregion
 
